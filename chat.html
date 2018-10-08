@@ -1,0 +1,146 @@
+<!--Mario Taglic-->
+<!--Justin Russo-->
+<!--Trevor Petrus-->
+
+<html>
+<head>
+  <title>Lounge</title>
+  <!--fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+</head>
+<body class="lounge">
+  <select id='lang' class="dropdown">
+        <option class="dropdown-item" value='bs'>Bosnian</option>
+        <option class="dropdown-item" value='zh-CN'>Chinese</option>
+        <option class="dropdown-item" value='hr'>Croatian</option>
+        <option class="dropdown-item" value='cs'>Czech</option>
+        <option class="dropdown-item" value='en'selected>English</option>
+        <option class="dropdown-item" value='fr'>French</option>
+        <option class="dropdown-item" value='de'>German</option>
+        <option class="dropdown-item" value='el'>Greek</option>
+        <option class="dropdown-item" value='iw'>Hebrew</option>
+        <option class="dropdown-item" value='hi'>Hindi</option>
+        <option class="dropdown-item" value='hu'>Hungarian</option>
+        <option class="dropdown-item" value='it'>Italian</option>
+        <option class="dropdown-item" value='ja'>Japanese</option>
+        <option class="dropdown-item" value='ko'>Korean</option>
+        <option class="dropdown-item" value='la'>Latin</option>
+        <option class="dropdown-item" value='ru'>Russian</option>
+        <option class="dropdown-item" value='es'>Spanish</option>
+        <option class="dropdown-item" value='tr'>Turkish</option>
+        <option class="dropdown-item" value='zu'>Zulu</option>
+      </select><br>
+  <ul class="container" id="messages"></ul>
+  <form class="inputBox" action="">
+    <input class="inputBox" id="m" placeholder="type to join" autocomplete="off" /><button class="sendButton">Send</button>
+  </form>
+  </div>
+</body>
+<audio class="sounds" controls>
+    <source src="sounds.mp3" type="audio/mpeg">
+    </audio>
+</html>
+
+<!------------------------------------------------------------------------------>
+<style>
+  body.lounge {
+    display: inline-block;
+    background: url("img/Wolf.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  select.dropdown {
+    display: inline-block;
+    background-color: white;
+    font-family: 'Orbitron', sans-serif;
+    color: orange;
+    border: 0px;
+    font-size: 10px;
+    width: 150px;
+    margin: 0;
+  }
+
+  input.inputBox {
+    opacity: 0.6;
+    border-color: #673AB7;
+    background-color: orange;
+    color: white;
+    width: 699px;
+  }
+
+  ul#messages.container {
+    display: inline-block;
+    overflow-y: auto;
+    margin-right: 100px;
+    opacity: 0.6;
+    background-color: orange;
+    border: 0px;
+    border-radius: 3px;
+    width: 750px;
+    height: 700px;
+  }
+
+  button.sendButton {
+    opacity: 0.6;
+    background-color: orange;
+    font-family: 'Orbitron', sans-serif;
+    border: 1px dashed white;
+    color: white;
+    outline: none;
+  }
+
+  form input,
+  #messages {
+    font-family: 'Orbitron', sans-serif;
+    border: 0px;
+    outline: none;
+  }
+
+  #messages {
+    list-style-type: square;
+    font-size: 14px;
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
+
+  #messages li {
+    padding: 5px 10px;
+  }
+
+  #messages li:nth-child(even) {
+    background: white;
+  }
+
+  audio.sounds {
+    width: 750px;
+  }
+</style>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function() {
+
+    var socket = io();
+    var done = false;
+
+    $('form').submit(function() {
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+
+    socket.on('chat message', function(msg, lang) {
+      done = false;
+      socket.emit('chat recieve', msg, $("#lang option:selected").val());
+    });
+
+    socket.on('chat recieve', function(msg, lang) {
+      if ($("#lang option:selected").val() == lang && done == false) {
+        $('#messages').append($('<li>').text(msg));
+        done = true;
+      }
+    })
+  });
+</script>
